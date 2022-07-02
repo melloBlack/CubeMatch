@@ -9,12 +9,18 @@ public class MatchingObjectsGenerator : MonoBehaviour
     [SerializeField] float creatingInterval;
     [SerializeField] MatchingObject[] fruits;
 
+    Vector3 centerPos;
+
+    bool generationDone;
+
+    public bool GenerationDone => generationDone;
+
     // Start is called before the first frame update
     void Start()
     {
+        transform.localPosition = new Vector3(-size.x * 0.5f + 0.5f, -size.y * 0.5f + 0.5f, -size.z * 0.5f + 0.5f);
         StartCoroutine(SpawnCubesFirstHalf());
         StartCoroutine(SpawnCubesSecondHalf());
-
     }
 
     IEnumerator SpawnCubesFirstHalf()
@@ -50,11 +56,17 @@ public class MatchingObjectsGenerator : MonoBehaviour
                 }
             }
         }
+
+        generationDone = true;
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawCube(transform.position, transform.localScale);
+        Gizmos.DrawCube(centerPos, transform.localScale);
         Gizmos.DrawCube(firstPos, transform.localScale);
+    }
+    private void OnValidate()
+    {
+        centerPos = new Vector3(-size.x * 0.5f + 0.5f, -size.y * 0.5f + 0.5f, -size.z * 0.5f + 0.5f);
     }
 }
