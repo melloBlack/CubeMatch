@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchingObjectsGenerator : MonoBehaviour
+public class CubesGenerator : MonoBehaviour
 {
+    [SerializeField] EventData eventData;
     [SerializeField] Vector3 size;
     [SerializeField] Vector3 firstPos;
     [SerializeField] float creatingInterval;
@@ -11,14 +12,10 @@ public class MatchingObjectsGenerator : MonoBehaviour
 
     Vector3 centerPos;
 
-    bool generationDone;
-
-    public bool GenerationDone => generationDone;
-
-    // Start is called before the first frame update
     void Start()
     {
         transform.localPosition = new Vector3(-size.x * 0.5f + 0.5f, -size.y * 0.5f + 0.5f, -size.z * 0.5f + 0.5f);
+        eventData.SetGenerator(this);
         StartCoroutine(SpawnCubesFirstHalf());
         StartCoroutine(SpawnCubesSecondHalf());
     }
@@ -33,7 +30,8 @@ public class MatchingObjectsGenerator : MonoBehaviour
                 {
                     int fruitIndex = Random.Range(0, fruits.Length);
                     MatchingObject newFruit = Instantiate(fruits[fruitIndex], firstPos, Quaternion.identity, transform);
-                    newFruit.MoveToLocalPosition(new Vector3(i, j, k));
+                    newFruit.MoveToLocalPosition(new Vector3(i, j, k), true);
+                    newFruit.SetEventData(eventData);
                     yield return new WaitForSeconds(creatingInterval);
                 }
             }
@@ -51,13 +49,14 @@ public class MatchingObjectsGenerator : MonoBehaviour
                 {
                     int fruitIndex = Random.Range(0, fruits.Length);
                     MatchingObject newFruit = Instantiate(fruits[fruitIndex], firstPos, Quaternion.identity, transform);
-                    newFruit.MoveToLocalPosition(new Vector3(i, j, k));
+                    newFruit.MoveToLocalPosition(new Vector3(i, j, k), true);
+                    newFruit.SetEventData(eventData);
                     yield return new WaitForSeconds(creatingInterval);
                 }
             }
         }
 
-        generationDone = true;
+        eventData.GenerationIsDone();
     }
 
     private void OnDrawGizmos()

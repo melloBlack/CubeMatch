@@ -4,18 +4,29 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    [SerializeField] EventData eventData;
     [SerializeField] float rotateSpeed;
     [SerializeField] float stopRotateSpeed;
 
     Rigidbody _rigidbody;
-    MatchingObjectsGenerator _matchingObjectsGenerator;
 
     bool isDragging;
+    bool canMove;
+
+    public bool CanMove
+    {
+        get { return canMove; }
+        set { canMove = value; }
+    }
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _matchingObjectsGenerator = GetComponentInChildren<MatchingObjectsGenerator>();
+    }
+
+    private void Start()
+    {
+        eventData.SetMovement(this);
     }
 
     private void OnMouseDrag()
@@ -30,7 +41,7 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        if (!_matchingObjectsGenerator.GenerationDone) return;
+        if (!canMove) return;
 
         if (Input.GetMouseButtonDown(0))
         {
