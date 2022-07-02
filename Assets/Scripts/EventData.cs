@@ -13,6 +13,8 @@ public class EventData : ScriptableObject
 
     public Action<float, int> ComboTime;
 
+    public Action<int> OnCollectStar;
+
     public Action<MatchingObject> OnCollectObject;
 
     public void SetMovement(Movement movement)

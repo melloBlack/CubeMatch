@@ -9,7 +9,9 @@ public class UIController : MonoBehaviour
     [SerializeField] EventData eventData;
     [SerializeField] RectTransform comboBarFront;
     [SerializeField] TextMeshProUGUI comboText;
+    [SerializeField] TextMeshProUGUI starText;
 
+    int starCount;
 
     // Start is called before the first frame update
     void Start()
@@ -21,10 +23,12 @@ public class UIController : MonoBehaviour
     private void OnEnable()
     {
         eventData.ComboTime += ComboTime;
+        eventData.OnCollectStar += UpdateStar;
     }
     private void OnDisable()
     {
         eventData.ComboTime -= ComboTime;
+        eventData.OnCollectStar -= UpdateStar;
     }
 
     void ComboTime(float comboTime, int combo)
@@ -32,5 +36,11 @@ public class UIController : MonoBehaviour
         comboBarFront.anchorMax = new Vector2(comboTime, comboBarFront.anchorMax.y);
 
         comboText.text = comboTime <= 0 ? $"" : $"x{combo}";
+    }
+
+    void UpdateStar(int star)
+    {
+        starCount += star;
+        starText.text = $"{starCount}";
     }
 }

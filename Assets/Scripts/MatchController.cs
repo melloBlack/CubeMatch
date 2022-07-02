@@ -112,6 +112,7 @@ public class MatchController : MonoBehaviour
     {
         currentComboTime = comboTime;
         combo++;
+        eventData.OnCollectStar?.Invoke(combo);
 
         Vector3 movePos = matchings[1].transform.localPosition;
         float currentTime = matchTime;
