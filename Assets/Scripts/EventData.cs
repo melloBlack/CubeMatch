@@ -9,6 +9,9 @@ public class EventData : ScriptableObject
     MatchController _matchController;
     CubesGenerator _cubesGenerator;
     Movement _movement;
+    UIController _uiController;
+
+    public Action<float, int> ComboTime;
 
     public Action<MatchingObject> OnCollectObject;
 
@@ -25,6 +28,11 @@ public class EventData : ScriptableObject
     public void SetMatchController(MatchController matchController)
     {
         _matchController = matchController;
+    }
+
+    public void SetUIController(UIController uiController)
+    {
+        _uiController = uiController;
     }
 
     public void GenerationIsDone()

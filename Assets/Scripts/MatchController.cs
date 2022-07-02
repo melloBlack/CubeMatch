@@ -6,20 +6,52 @@ using UnityEngine;
 public class MatchController : MonoBehaviour
 {
     [SerializeField] EventData eventData;
-    [SerializeField] int matchCount = 7;
+    [SerializeField] int maxObjectCount = 7;
     [SerializeField] float matchTime;
     [SerializeField] float collectSpeed;
-    [SerializeField] float collateInterval;
+    [SerializeField] float comboTime;
 
     List<MatchingObject> matchingObjects = new List<MatchingObject>();
 
     bool canMatch = true;
     bool isMatch;
-    // Start is called before the first frame update
+    float currentComboTime;
+    bool isCombo;
+    int combo;
+
     void Start()
     {
+        currentComboTime = 0;
         eventData.SetMatchController(this);
+    }
+
+    private void OnEnable()
+    {
         eventData.OnCollectObject += AddObject;
+    }
+
+    private void OnDisable()
+    {
+        eventData.OnCollectObject -= AddObject;
+    }
+
+    private void Update()
+    {
+        if (currentComboTime > 0)
+        {
+            currentComboTime -= Time.deltaTime;
+            eventData.ComboTime?.Invoke(currentComboTime / comboTime, combo);
+
+            if (!isCombo)
+            {
+                isCombo = true;
+            }
+        }
+        else if(isCombo)
+        {
+            isCombo = false;
+            combo = 0;
+        }
     }
 
     void CheckMatching()
@@ -40,7 +72,7 @@ public class MatchController : MonoBehaviour
         {
             canMatch = true;
 
-            if (matchCount == matchingObjects.Count)
+            if (maxObjectCount == matchingObjects.Count)
             {
                 Debug.Log("GameOver");
             }
@@ -49,7 +81,7 @@ public class MatchController : MonoBehaviour
 
     public void AddObject(MatchingObject matchingObject)
     {
-        if (matchCount == matchingObjects.Count || !canMatch) return;
+        if (maxObjectCount == matchingObjects.Count || !canMatch) return;
 
         StartCoroutine(AddObjectCoroutine(matchingObject));
     }
@@ -78,6 +110,9 @@ public class MatchController : MonoBehaviour
 
     IEnumerator UpdateArea(params MatchingObject[] matchings)
     {
+        currentComboTime = comboTime;
+        combo++;
+
         Vector3 movePos = matchings[1].transform.localPosition;
         float currentTime = matchTime;
 
