@@ -12,9 +12,13 @@ public class MatchingObject : MonoBehaviour
     [SerializeField] float landingSpeed;
 
     EventData eventData;
+    Transform firstParent;
 
     bool playability;
     bool _isCollected;
+
+    Vector3 firstPos;
+    Vector3 firstEuler;
 
     public Enums.FruitType FruitType => fruitType;
 
@@ -79,6 +83,12 @@ public class MatchingObject : MonoBehaviour
         playability = false;
     }
 
+    public void UndoProcess()
+    {
+        transform.parent = firstParent;
+        StartCoroutine(ResetPositionCoroutine());
+    }
+
     #endregion
 
     public void SetEventData(EventData data)
@@ -114,6 +124,24 @@ public class MatchingObject : MonoBehaviour
         }
 
         transform.localPosition = refPosition;
+        firstPos = refPosition;
+        firstEuler = transform.localEulerAngles;
+        firstParent = transform.parent;
+    }
+
+    IEnumerator ResetPositionCoroutine()
+    {
+
+        while (Vector3.Distance(transform.localPosition, firstPos) > 0.01f)
+        {
+            float speed = Mathf.Clamp(Vector3.Distance(transform.localPosition, firstPos), 1, 10) * landingSpeed * Time.deltaTime;
+            transform.localPosition = Vector3.Lerp(transform.localPosition, firstPos, speed);
+            transform.localEulerAngles = Vector3.Lerp(transform.localEulerAngles, firstEuler, speed);
+            yield return null;
+        }
+
+        transform.localPosition = firstPos;
+        transform.localEulerAngles = firstEuler;
     }
 
     #endregion

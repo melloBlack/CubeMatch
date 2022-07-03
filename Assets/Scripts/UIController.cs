@@ -10,13 +10,15 @@ public class UIController : MonoBehaviour
     #region Fields and Properties
 
     [SerializeField] EventData eventData;
+    [SerializeField] MatchData matchData;
 
-    [Header("Combo Elements")]
+    [Header("Game Panel")]
+    [SerializeField] GameObject gamePanel;
     [SerializeField] RectTransform comboBarFront;
     [SerializeField] TextMeshProUGUI comboText;
-
-    [Header("Star Elements")]
     [SerializeField] TextMeshProUGUI starText;
+    [SerializeField] Button UndoButton;
+    [SerializeField] TextMeshProUGUI undoAmountText;
 
     [Header("Pause Panel Elements")]
     [SerializeField] GameObject pausePanel;
@@ -32,6 +34,7 @@ public class UIController : MonoBehaviour
     [SerializeField] TextMeshProUGUI totalStarText;
 
     int starCount;
+    int undoAmount;
 
     #endregion
 
@@ -42,10 +45,14 @@ public class UIController : MonoBehaviour
         startButton.onClick.AddListener(StartGame);
         restartButton.onClick.AddListener(RestartGame);
         nextLevelButton.onClick.AddListener(RestartGame);
+        UndoButton.onClick.AddListener(UndoLastObject);
+        gamePanel.SetActive(false);
         pausePanel.SetActive(true);
         gameOverPanel.SetActive(false);
         victoryPanel.SetActive(false);
         comboBarFront.anchorMax = Vector2.up;
+        undoAmount = matchData.UndoAmount;
+        undoAmountText.text = $"{undoAmount}";
     }
 
     private void OnEnable()
@@ -54,6 +61,7 @@ public class UIController : MonoBehaviour
         eventData.OnCollectStar += UpdateStar;
         eventData.OnLose += GameOver;
         eventData.OnVictory += Victory;
+        eventData.OnNullMatchArea += ReUndoAmount;
     }
     private void OnDisable()
     {
@@ -61,6 +69,7 @@ public class UIController : MonoBehaviour
         eventData.OnCollectStar -= UpdateStar;
         eventData.OnLose -= GameOver;
         eventData.OnVictory -= Victory;
+        eventData.OnNullMatchArea -= ReUndoAmount;
     }
 
     #endregion
@@ -88,6 +97,7 @@ public class UIController : MonoBehaviour
     {
         eventData.OnStart?.Invoke();
         pausePanel.SetActive(false);
+        gamePanel.SetActive(true);
     }
 
     void UpdateStar(int star)
@@ -100,6 +110,22 @@ public class UIController : MonoBehaviour
     {
         victoryPanel.SetActive(true);
         totalStarText.text = $"{starCount}";
+    }
+
+    void UndoLastObject()
+    {
+        if (undoAmount > 0)
+        {
+            eventData.OnClickUndo?.Invoke();
+            undoAmount--;
+            undoAmountText.text = $"{undoAmount}";
+        }
+    }
+
+    void ReUndoAmount()
+    {
+        undoAmount++;
+        undoAmountText.text = $"{undoAmount}";
     }
 
     #endregion

@@ -9,10 +9,13 @@ public class MatchData : ScriptableObject
     [SerializeField] float matchTime = 0.25f;
     [SerializeField] float collectSpeed = 13f;
     [SerializeField] float comboTime = 5f;
+    [SerializeField] int undoAmount = 5;
 
     public int MaxObjectCount => maxObjectCount;
 
     public float MatchTime => matchTime;
     public float CollectSpeed => collectSpeed;
     public float ComboTime => comboTime;
+
+    public int UndoAmount => undoAmount;
 }

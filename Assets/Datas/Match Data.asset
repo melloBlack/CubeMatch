@@ -16,3 +16,4 @@ MonoBehaviour:
   matchTime: 0.25
   collectSpeed: 13
   comboTime: 10
+  undoAmount: 5

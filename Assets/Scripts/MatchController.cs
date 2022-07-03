@@ -30,11 +30,13 @@ public class MatchController : MonoBehaviour
     private void OnEnable()
     {
         eventData.OnCollectObject += AddObject;
+        eventData.OnClickUndo += UndoObject;
     }
 
     private void OnDisable()
     {
         eventData.OnCollectObject -= AddObject;
+        eventData.OnClickUndo -= UndoObject;
     }
 
     private void Update()
@@ -59,6 +61,21 @@ public class MatchController : MonoBehaviour
     #endregion
 
     #region Unique Methods
+
+    void UndoObject()
+    {
+        if (matchingObjects.Count == 0)
+        {
+            eventData.OnNullMatchArea?.Invoke();
+        }
+        else
+        {
+            MatchingObject currentObject = matchingObjects[matchingObjects.Count - 1];
+            currentObject.UndoProcess();
+            matchingObjects.Remove(currentObject);
+            eventData.OnUndoObject.Invoke(currentObject);
+        }
+    }
 
     void CheckMatching()
     {
@@ -99,10 +116,10 @@ public class MatchController : MonoBehaviour
 
     IEnumerator AddObjectCoroutine(MatchingObject matchingObject)
     {
+        matchingObject.IsCollected = true;
         matchingObject.transform.parent = transform;
         Vector3 newMtachPos = Vector3.right * matchingObjects.Count;
         matchingObjects.Add(matchingObject);
-        matchingObject.IsCollected = true;
         canMatch = false;
 
         while (Vector3.Distance(matchingObject.transform.localPosition, newMtachPos) > 0.01f)

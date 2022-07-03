@@ -15,6 +15,7 @@ public class CubesGenerator : MonoBehaviour
 
     Vector3 centerPos;
     int totalSize;
+    int counter;
 
     List<MatchingObject> matchingObjects = new List<MatchingObject>();
 
@@ -25,12 +26,14 @@ public class CubesGenerator : MonoBehaviour
     {
         eventData.OnStart += StartGame;
         eventData.OnCollectObject += RemoveObject;
+        eventData.OnUndoObject += AddObject;
     }
 
     private void OnDisable()
     {
         eventData.OnStart -= StartGame;
         eventData.OnCollectObject -= RemoveObject;
+        eventData.OnUndoObject -= AddObject;
     }
 
     private void OnDrawGizmos()
@@ -68,11 +71,17 @@ public class CubesGenerator : MonoBehaviour
     void RemoveObject(MatchingObject matchingObject)
     {
         matchingObjects.Remove(matchingObject);
-
-        if (matchingObjects.Count <= leftAmount)
+        counter++;
+        if (totalSize == leftAmount + counter)
         {
             eventData.OnVictory?.Invoke();
         }
+    }
+
+    void AddObject(MatchingObject matchingObject)
+    {
+        matchingObjects.Add(matchingObject);
+        counter--;
     }
 
     #endregion

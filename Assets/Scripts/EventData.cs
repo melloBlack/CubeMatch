@@ -13,6 +13,9 @@ public class EventData : ScriptableObject
     public Action OnPause;
     public Action OnLose;
     public Action OnVictory;
+    public Action OnClickUndo;
+    public Action OnNullMatchArea;
+    public Action<MatchingObject> OnUndoObject;
     public Action<int> OnCollectStar;
     public Action<Vector3, int> OnMoveStar;
     public Action<float, int> ComboTime;

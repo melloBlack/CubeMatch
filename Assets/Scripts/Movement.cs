@@ -26,14 +26,16 @@ public class Movement : MonoBehaviour
 
     private void OnEnable()
     {
-        eventData.OnPlay += PlayGame;
-        eventData.OnPause += PauseGame;
+        eventData.OnPlay += StartMove;
+        eventData.OnPause += StopMove;
+        eventData.OnVictory -= StopMove;
     }
 
     private void OnDisable()
     {
-        eventData.OnPlay -= PlayGame;
-        eventData.OnPause -= PauseGame;
+        eventData.OnPlay -= StartMove;
+        eventData.OnPause -= StopMove;
+        eventData.OnVictory -= StopMove;
     }
 
     private void OnMouseDrag()
@@ -79,12 +81,12 @@ public class Movement : MonoBehaviour
 
     #region Listener Methods
 
-    void PlayGame()
+    void StartMove()
     {
         canMove = true;
     }
 
-    void PauseGame()
+    void StopMove()
     {
         canMove = false;
     }
