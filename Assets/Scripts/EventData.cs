@@ -6,16 +6,21 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Event Data", menuName = "Data/Event Data")]
 public class EventData : ScriptableObject
 {
+    #region Fields and Properties
+
     MatchController _matchController;
     CubesGenerator _cubesGenerator;
     Movement _movement;
     UIController _uiController;
 
-    public Action<float, int> ComboTime;
-
     public Action<int> OnCollectStar;
-
+    public Action<Vector3, int> OnMoveStar;
+    public Action<float, int> ComboTime;
     public Action<MatchingObject> OnCollectObject;
+
+    #endregion
+
+    #region Members Registration
 
     public void SetMovement(Movement movement)
     {
@@ -36,6 +41,8 @@ public class EventData : ScriptableObject
     {
         _uiController = uiController;
     }
+
+    #endregion
 
     public void GenerationIsDone()
     {

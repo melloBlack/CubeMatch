@@ -6,6 +6,8 @@ using TMPro;
 
 public class UIController : MonoBehaviour
 {
+    #region Fields and Properties
+
     [SerializeField] EventData eventData;
     [SerializeField] RectTransform comboBarFront;
     [SerializeField] TextMeshProUGUI comboText;
@@ -13,7 +15,10 @@ public class UIController : MonoBehaviour
 
     int starCount;
 
-    // Start is called before the first frame update
+    #endregion
+
+    #region MonoBehaviour Methods
+
     void Start()
     {
         eventData.SetUIController(this);
@@ -31,6 +36,10 @@ public class UIController : MonoBehaviour
         eventData.OnCollectStar -= UpdateStar;
     }
 
+    #endregion
+
+    #region Unique Methods
+
     void ComboTime(float comboTime, int combo)
     {
         comboBarFront.anchorMax = new Vector2(comboTime, comboBarFront.anchorMax.y);
@@ -43,4 +52,6 @@ public class UIController : MonoBehaviour
         starCount += star;
         starText.text = $"{starCount}";
     }
+
+    #endregion
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CubesGenerator : MonoBehaviour
 {
+    #region Fields and Properties
+
     [SerializeField] EventData eventData;
     [SerializeField] Vector3 size;
     [SerializeField] Vector3 firstPos;
@@ -12,6 +14,10 @@ public class CubesGenerator : MonoBehaviour
 
     Vector3 centerPos;
 
+    #endregion
+
+    #region MonoBehaviour Methods
+
     void Start()
     {
         transform.localPosition = new Vector3(-size.x * 0.5f + 0.5f, -size.y * 0.5f + 0.5f, -size.z * 0.5f + 0.5f);
@@ -19,6 +25,20 @@ public class CubesGenerator : MonoBehaviour
         StartCoroutine(SpawnCubesFirstHalf());
         StartCoroutine(SpawnCubesSecondHalf());
     }
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawCube(centerPos, transform.localScale);
+        Gizmos.DrawCube(firstPos, transform.localScale);
+        Gizmos.color = Color.yellow;
+    }
+    private void OnValidate()
+    {
+        centerPos = new Vector3(-size.x * 0.5f + 0.5f, -size.y * 0.5f + 0.5f, -size.z * 0.5f + 0.5f);
+    }
+
+    #endregion
+
+    #region Coroutines
 
     IEnumerator SpawnCubesFirstHalf()
     {
@@ -56,16 +76,10 @@ public class CubesGenerator : MonoBehaviour
             }
         }
 
+        yield return new WaitForSeconds(creatingInterval);
+
         eventData.GenerationIsDone();
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawCube(centerPos, transform.localScale);
-        Gizmos.DrawCube(firstPos, transform.localScale);
-    }
-    private void OnValidate()
-    {
-        centerPos = new Vector3(-size.x * 0.5f + 0.5f, -size.y * 0.5f + 0.5f, -size.z * 0.5f + 0.5f);
-    }
+    #endregion
 }

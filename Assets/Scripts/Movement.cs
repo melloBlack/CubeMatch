@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    #region Fields and Properties
+
     [SerializeField] EventData eventData;
     [SerializeField] float rotateSpeed;
     [SerializeField] float stopRotateSpeed;
@@ -18,6 +20,10 @@ public class Movement : MonoBehaviour
         get { return canMove; }
         set { canMove = value; }
     }
+
+    #endregion
+
+    #region MonoBehaviour Methods
 
     private void Awake()
     {
@@ -39,6 +45,16 @@ public class Movement : MonoBehaviour
         isDragging = false;
     }
 
+    private void FixedUpdate()
+    {
+        if (isDragging)
+        {
+            float x = Input.GetAxis("Mouse Y") * rotateSpeed;
+            float y = -Input.GetAxis("Mouse X") * rotateSpeed;
+            _rigidbody.angularVelocity = new Vector3(x, y, 0);
+        }
+    }
+
     private void Update()
     {
         if (!canMove) return;
@@ -58,15 +74,9 @@ public class Movement : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (isDragging)
-        {
-            float x = Input.GetAxis("Mouse Y") * rotateSpeed;
-            float y = -Input.GetAxis("Mouse X") * rotateSpeed;
-            _rigidbody.angularVelocity = new Vector3(x, y, 0);
-        }
-    }
+    #endregion
+
+    #region Coroutines
 
     IEnumerator ResetAngularVelocity()
     {
@@ -84,4 +94,6 @@ public class Movement : MonoBehaviour
             _rigidbody.angularVelocity = Vector3.zero;
         }
     }
+
+    #endregion
 }

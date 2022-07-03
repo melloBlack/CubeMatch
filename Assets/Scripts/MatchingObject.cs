@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MatchingObject : MonoBehaviour
 {
+    #region Fields and Properties
+
     [SerializeField] Enums.FruitType fruitType;
     [SerializeField] ParticleSystem creatingEffect;
     [SerializeField] GameObject outline;
@@ -13,13 +15,17 @@ public class MatchingObject : MonoBehaviour
 
     bool _isCollected;
 
+    public Enums.FruitType FruitType => fruitType;
+
     public bool IsCollected
     {
         get { return _isCollected; }
         set { _isCollected = value; }
     }
 
-    public Enums.FruitType FruitType => fruitType;
+    #endregion
+
+    #region MonoBehaviour Methods
 
     private void Start()
     {
@@ -48,6 +54,10 @@ public class MatchingObject : MonoBehaviour
         outline.SetActive(false);
     }
 
+    #endregion
+
+    #region Unique Methods
+
     public void SetEventData(EventData data)
     {
         eventData = data;
@@ -63,6 +73,10 @@ public class MatchingObject : MonoBehaviour
         StartCoroutine(MoveToLocalPositionCoroutine(refPosition));
     }
 
+    #endregion
+
+    #region Coroutines
+
     IEnumerator MoveToLocalPositionCoroutine(Vector3 refPosition)
     {
 
@@ -75,4 +89,6 @@ public class MatchingObject : MonoBehaviour
 
         transform.localPosition = refPosition;
     }
+
+    #endregion
 }

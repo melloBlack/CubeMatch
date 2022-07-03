@@ -5,11 +5,10 @@ using UnityEngine;
 
 public class MatchController : MonoBehaviour
 {
+    #region Fields and Properties
+
     [SerializeField] EventData eventData;
-    [SerializeField] int maxObjectCount = 7;
-    [SerializeField] float matchTime;
-    [SerializeField] float collectSpeed;
-    [SerializeField] float comboTime;
+    [SerializeField] MatchData matchData;
 
     List<MatchingObject> matchingObjects = new List<MatchingObject>();
 
@@ -18,6 +17,10 @@ public class MatchController : MonoBehaviour
     float currentComboTime;
     bool isCombo;
     int combo;
+
+    #endregion
+
+    #region MonoBehaviour Methods
 
     void Start()
     {
@@ -40,7 +43,7 @@ public class MatchController : MonoBehaviour
         if (currentComboTime > 0)
         {
             currentComboTime -= Time.deltaTime;
-            eventData.ComboTime?.Invoke(currentComboTime / comboTime, combo);
+            eventData.ComboTime?.Invoke(currentComboTime / matchData.ComboTime, combo);
 
             if (!isCombo)
             {
@@ -53,6 +56,10 @@ public class MatchController : MonoBehaviour
             combo = 0;
         }
     }
+
+    #endregion
+
+    #region Unique Methods
 
     void CheckMatching()
     {
@@ -72,7 +79,7 @@ public class MatchController : MonoBehaviour
         {
             canMatch = true;
 
-            if (maxObjectCount == matchingObjects.Count)
+            if (matchData.MaxObjectCount == matchingObjects.Count)
             {
                 Debug.Log("GameOver");
             }
@@ -81,10 +88,14 @@ public class MatchController : MonoBehaviour
 
     public void AddObject(MatchingObject matchingObject)
     {
-        if (maxObjectCount == matchingObjects.Count || !canMatch) return;
+        if (matchData.MaxObjectCount == matchingObjects.Count || !canMatch) return;
 
         StartCoroutine(AddObjectCoroutine(matchingObject));
     }
+
+    #endregion
+
+    #region Coroutines
 
     IEnumerator AddObjectCoroutine(MatchingObject matchingObject)
     {
@@ -96,7 +107,7 @@ public class MatchController : MonoBehaviour
 
         while (Vector3.Distance(matchingObject.transform.localPosition, newMtachPos) > 0.01f)
         {
-            float speed = Mathf.Clamp(Vector3.Distance(matchingObject.transform.localPosition, newMtachPos), 1, 20) * collectSpeed * Time.deltaTime;
+            float speed = Mathf.Clamp(Vector3.Distance(matchingObject.transform.localPosition, newMtachPos), 1, 20) * matchData.CollectSpeed * Time.deltaTime;
             matchingObject.transform.localPosition = Vector3.Lerp(matchingObject.transform.localPosition, newMtachPos, speed);
             matchingObject.transform.localRotation = Quaternion.Lerp(matchingObject.transform.localRotation, Quaternion.identity, speed);
             yield return null;
@@ -110,12 +121,13 @@ public class MatchController : MonoBehaviour
 
     IEnumerator UpdateArea(params MatchingObject[] matchings)
     {
-        currentComboTime = comboTime;
+        currentComboTime = matchData.ComboTime;
         combo++;
         eventData.OnCollectStar?.Invoke(combo);
+        eventData.OnMoveStar?.Invoke(matchings[1].transform.position, combo);
 
         Vector3 movePos = matchings[1].transform.localPosition;
-        float currentTime = matchTime;
+        float currentTime = matchData.MatchTime;
 
         while (currentTime > 0)
         {
@@ -140,14 +152,5 @@ public class MatchController : MonoBehaviour
         CheckMatching();
     }
 
-    //IEnumerator CollateObjects()
-    //{
-    //    int count = matchingObjects.Count;
-
-    //    for (int i = 0; i < count; i++)
-    //    {
-    //        matchingObjects[i].MoveToLocalPosition(Vector3.right * i);
-    //        yield return new WaitForSeconds(collateInterval);
-    //    }
-    //}
+    #endregion
 }
