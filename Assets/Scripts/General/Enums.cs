@@ -21,4 +21,12 @@ public class Enums
         Donut,
         IceCream
     }
+
+    public enum GameState
+    {
+        Pause,
+        Playing,
+        Lose,
+        Victory
+    }
 }

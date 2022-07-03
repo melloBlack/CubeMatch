@@ -15,12 +15,6 @@ public class Movement : MonoBehaviour
     bool isDragging;
     bool canMove;
 
-    public bool CanMove
-    {
-        get { return canMove; }
-        set { canMove = value; }
-    }
-
     #endregion
 
     #region MonoBehaviour Methods
@@ -30,9 +24,16 @@ public class Movement : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        eventData.SetMovement(this);
+        eventData.OnPlay += PlayGame;
+        eventData.OnPause += PauseGame;
+    }
+
+    private void OnDisable()
+    {
+        eventData.OnPlay -= PlayGame;
+        eventData.OnPause -= PauseGame;
     }
 
     private void OnMouseDrag()
@@ -72,6 +73,20 @@ public class Movement : MonoBehaviour
             isDragging = false;
             StartCoroutine(ResetAngularVelocity());
         }
+    }
+
+    #endregion
+
+    #region Listener Methods
+
+    void PlayGame()
+    {
+        canMove = true;
+    }
+
+    void PauseGame()
+    {
+        canMove = false;
     }
 
     #endregion

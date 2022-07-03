@@ -25,7 +25,6 @@ public class MatchController : MonoBehaviour
     void Start()
     {
         currentComboTime = 0;
-        eventData.SetMatchController(this);
     }
 
     private void OnEnable()
@@ -81,6 +80,7 @@ public class MatchController : MonoBehaviour
 
             if (matchData.MaxObjectCount == matchingObjects.Count)
             {
+                eventData.OnLose?.Invoke();
                 Debug.Log("GameOver");
             }
         }

@@ -13,6 +13,7 @@ public class MatchingObject : MonoBehaviour
 
     EventData eventData;
 
+    bool playability;
     bool _isCollected;
 
     public Enums.FruitType FruitType => fruitType;
@@ -32,16 +33,25 @@ public class MatchingObject : MonoBehaviour
         outline.SetActive(false);
     }
 
+    private void OnDisable()
+    {
+        if (!eventData) return;
+
+        eventData.OnPlay -= PlayGame;
+        eventData.OnPause -= PauseGame;
+        eventData.OnLose -= PauseGame;
+    }
+
     private void OnMouseEnter()
     {
-        if (_isCollected) return;
+        if (_isCollected || !playability) return;
 
         outline.SetActive(true);
     }
 
     private void OnMouseUpAsButton()
     {
-        if (_isCollected) return;
+        if (_isCollected || !playability) return;
 
         eventData.OnCollectObject?.Invoke(this);
         outline.SetActive(false);
@@ -58,9 +68,25 @@ public class MatchingObject : MonoBehaviour
 
     #region Unique Methods
 
+    #region Listener Methods
+
+    void PlayGame()
+    {
+        playability = true;
+    }
+    void PauseGame()
+    {
+        playability = false;
+    }
+
+    #endregion
+
     public void SetEventData(EventData data)
     {
         eventData = data;
+        eventData.OnPlay += PlayGame;
+        eventData.OnPause += PauseGame;
+        eventData.OnLose += PauseGame;
     }
 
     public void MoveToLocalPosition(Vector3 refPosition, bool withEffect = false)
